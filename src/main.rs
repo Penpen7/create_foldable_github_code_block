@@ -10,14 +10,22 @@ struct Context {
     date: String,
     stdout: String,
     relative_path: String,
+    commit_hash: String,
+    git_diff: String,
 }
 
 const TEMPLATE: &str = r"<details>
-<summary>{command}の実行結果({relative_path}, {date})</summary>
+<summary>{command}の実行結果({relative_path}, {date}, {commit_hash})</summary>
 
-```
+# 実行結果
+````
 {stdout}
-```
+````
+
+# git diff({commit_hash}からの差分)
+````diff
+{git_diff}
+````
 
 </details>
 ";
@@ -28,7 +36,6 @@ fn main() {
 
     let (stdout, command) = if args.len() < 2 {
         // コマンドライン引数がなければ、stdinから入力を受け取る
-        // 入力をとる
         let mut buf = String::new();
         let stdin = std::io::stdin();
         let mut handle = stdin.lock();
@@ -63,6 +70,27 @@ fn main() {
         // root_directory.trim().to_string()
     };
 
+    let commit_hash = {
+        let commit_hash = std::process::Command::new("git")
+            .arg("rev-parse")
+            .arg("HEAD")
+            .output()
+            .expect("failed to execute process")
+            .stdout;
+        let commit_hash = String::from_utf8(commit_hash).unwrap();
+        commit_hash.trim().to_string().chars().take(7).collect()
+    };
+
+    let git_diff = {
+        let git_diff = std::process::Command::new("git")
+            .arg("diff")
+            .arg("--no-color")
+            .output()
+            .expect("failed to execute process")
+            .stdout;
+        String::from_utf8(git_diff).unwrap()
+    };
+
     // 相対パスを取得
     let relative_path = Path::new(&current_directory)
         .strip_prefix(&root_directory)
@@ -78,6 +106,8 @@ fn main() {
         date: date_now,
         stdout: stdout.clone(),
         relative_path: relative_path.to_str().unwrap().to_string(),
+        commit_hash,
+        git_diff,
     };
 
     let rendered = tt.render("template", &context).unwrap();
