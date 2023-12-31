@@ -24,6 +24,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "anyhow"
+version = "1.0.78"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ca87830a3e3fb156dc96cfbd31cb620265dd053be734723f22b760d6cc3c3051"
+
+[[package]]
 name = "arboard"
 version = "3.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -177,6 +183,7 @@ dependencies = [
 name = "create_foldable_github_code_block"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "arboard",
  "chrono",
  "serde",
