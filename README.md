@@ -11,5 +11,6 @@ then paste the output into your issue comment or pull request description.
 
 ## Installation
 ```
-$ cargo install --git
+$ cargo install --git https://github.com/Penpen7/create_foldable_github_code_block 
 ```
+
