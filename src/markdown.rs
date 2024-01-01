@@ -50,3 +50,39 @@ pub fn create_markdown(
 
     Ok(tt.render("template", &context)?)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_create_markdown() {
+        let command = "ls -la";
+        let stdout = "total 0
+drwxr-xr-x  3 user  staff   96  7  1 00:00 .
+drwxr-xr-x  5 user  staff  160  7  1 00:00 ..
+drwxr-xr-x  3 user  staff   96  7  1 00:00 .git
+";
+        let relative_path = "test";
+        let commit_hash = "1234567";
+        let git_diff = "diff --git a/test b/test
+new file mode 100644
+index 0000000..e69de29
+";
+        let date_now = "2020-07-01 00:00:00";
+        let markdown = create_markdown(
+            command,
+            stdout,
+            relative_path,
+            commit_hash,
+            git_diff,
+            date_now,
+        )
+        .unwrap();
+        assert!(markdown.contains("ls -la"));
+        assert!(markdown.contains("2020-07-01 00:00:00"));
+        assert!(markdown.contains("1234567"));
+        assert!(markdown.contains("test"));
+        assert!(markdown.contains("diff --git"));
+    }
+}
