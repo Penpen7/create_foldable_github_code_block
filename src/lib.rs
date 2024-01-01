@@ -19,10 +19,26 @@ fn display_code_summary(code: &str) {
 }
 
 pub fn run(command: String, code: String) -> anyhow::Result<()> {
-    let current_directory = cmd::get_current_directory()?;
-    let root_directory = git::get_root_directory()?;
-    let commit_hash = git::get_commit_hash()?;
-    let git_diff = git::get_gitdiff()?;
+    let current_directory = cmd::get_current_directory()
+        .map_err(|e| anyhow::anyhow!("Failed to get current directory. {}", e))?;
+    let root_directory = git::get_root_directory().map_err(|e| {
+        anyhow::anyhow!(
+            "Failed to get root directory. Please check if you are in a git repository or install git {}",
+            e
+        )
+    })?;
+    let commit_hash = git::get_commit_hash().map_err(|e| {
+        anyhow::anyhow!(
+            "Failed to get commit hash. Please check if you are in a git repository or install git. {}",
+            e
+        )
+    })?;
+    let git_diff = git::get_gitdiff().map_err(|e| {
+        anyhow::anyhow!(
+            "Failed to get git diff. Please check if you are in a git repository or install git.  {}",
+            e
+        )
+    })?;
     let relative_path = current_directory.strip_prefix(&root_directory).unwrap();
 
     let date_now = chrono::Local::now().format("%Y-%m-%d %H:%M:%S").to_string();
