@@ -4,16 +4,16 @@ mod git;
 mod markdown;
 
 fn display_code_summary(code: &str) {
+    let take_lines = 5;
     let lines: Vec<&str> = code.split('\n').collect();
-    for line in lines.iter().take(5) {
+    for line in lines.iter().take(take_lines) {
         println!("{}", line);
     }
-    // 5行以上あれば、...を表示
-    if lines.len() > 5 {
+    if lines.len() > take_lines {
         println!("...");
     }
     // 最後の5行を表示
-    for line in lines.iter().rev().take(5).rev() {
+    for line in lines.iter().rev().take(take_lines).rev() {
         println!("{}", line);
     }
 }
