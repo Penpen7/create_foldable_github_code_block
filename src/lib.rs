@@ -58,3 +58,18 @@ pub fn run(command: String, code: String) -> anyhow::Result<()> {
 
     Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_run() {
+        let command = "cargo run".to_string();
+        let code = "fn main() {\n    println!(\"Hello, world!\");\n}".to_string();
+        run(command, code).unwrap();
+        let mut clipboard = arboard::Clipboard::new().unwrap();
+        let text = clipboard.get_text().unwrap();
+        assert!(text.contains("Hello, world!"));
+    }
+}
