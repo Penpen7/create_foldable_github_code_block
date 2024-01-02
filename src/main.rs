@@ -23,7 +23,7 @@ fn main() {
         (stdout, title)
     };
 
-    create_foldable_github_code_block::run(stdout, command).unwrap_or_else(|e| {
+    create_foldable_github_code_block::run(command, stdout).unwrap_or_else(|e| {
         eprintln!("Error: {}", e);
         std::process::exit(1);
     })
