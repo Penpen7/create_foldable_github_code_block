@@ -39,7 +39,13 @@ pub fn run(command: String, code: String) -> anyhow::Result<()> {
             e
         )
     })?;
-    let relative_path = current_directory.strip_prefix(&root_directory).unwrap();
+
+    // root_directoryより1つ上のディレクトリまでのPathBufを取得
+    let root_directory_parent = root_directory.parent().unwrap();
+
+    let relative_path = current_directory
+        .strip_prefix(root_directory_parent)
+        .unwrap();
 
     let date_now = chrono::Local::now().format("%Y-%m-%d %H:%M:%S").to_string();
 
